@@ -1,38 +1,33 @@
 # Framework for Martini-based Coarse-grained Model of Enzymes
 
 README.TXT
-UPDATED 6/22/24 by MH
+UPDATED 9/21/24 by MH
 
 ## Introduction
-This repo [a work in progress] contains codes supporting the manuscript noted in the _Citation_ section below.
+This repo [a work in progress] contains codes supporting the manuscript noted in the _Citation_ section below. Codes are organized roughly by workflow, including a variety of scripts for file transformation, simulation environment prep, analysis, and plotting.
 
 ### Citation 
 Hooten M., Murthy N.S., Gormley A., Dutt M. Framework for Martini-based Coarse-grained Model of Enzymes: Development and Experimental Validation. 
 [arXiv DOI](https://doi.org/[arxivdoi])
 
-## Study Workflow
-This section describes the overall study workflow, including reference to original codes used for model preparation and analysis. Codes this repo are organized according by their constituent workflows detailed in subheadings below.
+### Simulation
+Example scripts and parameter files for all-atom (AA) and coarse-grained (CG) simulation of lipase and dehalogenase.
 
-### AA Model - Development and Simulation
-+ PDB structure.pdb > preprocess (e.g. remove waters, rename ions, rename files) > fixed_structure.pdb
-+ CHARMM, Gromacs > GROMACS preprocessing programs pdb2gmx,editconf,solvate,genions > Gromacs runtime files (aa.top, aa.gro, aa_md.tpr)
-+ gro,tpr > simulation AA > Gromacs outputs (xtc, gro, edr)
 
-### CG Model - Development and Simulation
-+ aa.gro > Martinize2.py -en > cg.top, cg.gro
+### Structure Workflow
+Calculation of gyration tensor parameters and pair distribution functions.
 
-### Analysis
+### Surface Workflow - Evaluation of Simulated Enzyme Surfaces
+Production calculation of surface profiles is done using the shell program `xtc_to_surfmap.sh` (or `xtc_to_surfmap-AA.sh`). This program resamples the given trajectories, preprocesses the sample frames, and runs SURFMAP.
 
-#### Xray experiment
+Original codes in this repo are:
 
-#### Evaluation of Simulated Shapes
-+ gmx trjconv trajectory.xtc > resample > frames.gros
-+ frames.gros > gyration_tensor.py > 
++ `xtc_tosurfmap.sh`
++ `run_surfmap.sh`
++ `gro2pdbcoords.py`
++ `gro2pqr.py`
 
-#### Evaluation of Simulated Surfaces
-Production calculation of surface profiles is done using the shell program `xtc_to_surfmap.sh` (or `xtc_to_surfmap-AA.sh`). This program resamples the given trajectories, preprocesses the sample frames, and runs SURFMAP. 
-
-##### xtc_to_surfmap.sh
+#### xtc_to_surfmap.sh
 Inputs:
 
 1. `atypes.dat` - File with atom types (one per line) corresponding to the input trajectory. Used by `gro2pqr.py`.
@@ -56,7 +51,7 @@ Pseudocode:
     + for framenum in 1 to 10
         + run `run_surfmap.sh seednum_framenum.gro atypes.dat charges.dat seqres.txt` to produce SURFMAP output
 
-##### run_surfmap.sh
+#### run_surfmap.sh
 Inputs:
 
 1. `input.gro` - A Gromacs trajectory frame
@@ -80,7 +75,7 @@ Pseudocode:
 1. run `gro2pqr.py` to create a PQR file
 3. run `SURFMAP`
 
-##### gro2pdbcoords.py
+#### gro2pdbcoords.py
 Inputs:
 
 1. `input.gro`
@@ -90,7 +85,7 @@ Outputs:
 
 1. `input.pdb`
 
-##### gro2pqr.py
+#### gro2pqr.py
 Inputs:
 
 1. `input.gro`
@@ -101,6 +96,9 @@ Outputs:
 
 1. `input.pqr`
 
-### Plotting
+### Figures
+Scripts used to produce figures from the manuscript.
 
+## Acknowledgements
+This work was funded by the National Science Foundation (DMREF-2118860, DMR-1654325, OAC-1835449 and CBET-2309852). The authors acknowledge the use of computational resources enabled via an allocation from NSF ACCESS (allocation DMR-140125).
 
